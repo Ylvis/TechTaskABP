@@ -98,11 +98,19 @@ namespace TechicalTask.API.Controllers
             Result tempResult = new Result();
             if (_clientsDBContext.Results.FirstOrDefault(e => e.deviceToken == hash) != null)
                 tempResult = await _clientsDBContext.Results.FirstOrDefaultAsync(e => e.deviceToken == hash && e.X_Name == experiment.Name);
-            token = tempResult.deviceToken;
+            if (tempResult != null)
+            {
+                token = tempResult.deviceToken;
+            }
+            else
+            {
+                token = hash;
+                tempResult = new Result { deviceToken = hash};               
+            }
             var list = await _clientsDBContext.Results.Where(e => e.deviceToken == hash).ToListAsync();
             if (experiment != null)
             {
-                if (token == null || (token != null && tempResult.X_Name != experiment.Name && list.Count < 2 && button_color != null))
+                if ((token == null || (token != null && tempResult.X_Name != experiment.Name && list.Count < 2)) && button_color != "null")
                 {
                     //code of generation result
                     Random random = new Random();
@@ -139,7 +147,15 @@ namespace TechicalTask.API.Controllers
             Result tempResult = new Result();
             if (_clientsDBContext.Results.FirstOrDefault(e => e.deviceToken == hash) != null)
                 tempResult = await _clientsDBContext.Results.FirstOrDefaultAsync(e => e.deviceToken == hash && e.X_Name == experiment.Name);
-            token = tempResult.deviceToken;
+            if (tempResult != null)
+            {
+                token = tempResult.deviceToken;
+            }
+            else
+            {
+                token = hash;
+                tempResult.deviceToken = token;
+            }
             var list = await _clientsDBContext.Results.Where(e => e.deviceToken == hash).ToListAsync();
             if (experiment != null)
             {
